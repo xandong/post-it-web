@@ -1,5 +1,5 @@
 import { Main } from "../components/Main";
 
 export function Perfil() {
-  return <Main>Perfil</Main>;
+  return <Main title="Perfil"><div></div></Main>;
 }

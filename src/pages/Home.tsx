@@ -9,10 +9,7 @@ export function Home() {
   const [toggleNewNote, setToggleNewNote] = useState(false);
 
   return (
-    <Main>
-      <h1 className="pb-10 text-center md:text-6xl text-4xl font-extrabold text-cor-pink dark:text-cor-purple">
-        Bem vindo ao Post it!
-      </h1>
+    <Main title="Bem vindo ao Post it!">
       <section className="flex flex-col rounded-md">
         <div className="flex sm:justify-end justify-center">
           <button
