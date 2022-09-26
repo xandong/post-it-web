@@ -4,10 +4,10 @@ import { Link, Navigate } from "react-router-dom";
 import { useTheme } from "../context/ThemeContextProvider";
 import { Notyf } from "notyf";
 import "notyf/notyf.min.css";
-import { AuthContext } from "../context/Auth";
+import { UserContext } from "../context/Auth";
 
 export function Header() {
-  const { id } = useContext(AuthContext);
+  const { id } = useContext(UserContext);
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [user, setUser] = useState("a");
