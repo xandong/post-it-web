@@ -9,6 +9,7 @@ interface FieldProps {
   initialType?: React.HTMLInputTypeAttribute;
   value: string;
   setValue: Dispatch<SetStateAction<string>>;
+  required?: boolean;
 }
 
 export function Field({
@@ -19,6 +20,7 @@ export function Field({
   initialType = type,
   value,
   setValue,
+  required = true,
 }: FieldProps) {
   const [isVisible, setIsVisible] = useState(false);
   const [typed, setTyped] = useState(type);
@@ -33,7 +35,6 @@ export function Field({
     return setTyped("password");
   }
 
-  console.log(typed);
   const isPassword = initialType === "password";
 
   return (
@@ -47,9 +48,11 @@ export function Field({
           id={id}
           type={typed}
           placeholder={placeholder}
+          required={required}
         />
         {isPassword ? (
           <button
+            type={"button"}
             className="absolute top-2 right-3 text-xl"
             onClick={handleClick}
           >
