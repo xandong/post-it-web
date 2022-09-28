@@ -1,12 +1,21 @@
-import { CardNote } from "../components/CardNote";
+import { CardNote, CardNoteProps } from "../components/CardNote";
 import { Main } from "../components/Main";
 import "notyf/notyf.min.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ArrowUp } from "phosphor-react";
 import { NewNote } from "../components/NewNote";
+import api from "../api/api";
 
 export function Home() {
   const [toggleNewNote, setToggleNewNote] = useState(false);
+  const [notes, setNotes] = useState([]);
+
+  useEffect(() => {
+    (async () => {
+      const { data } = await api.get("/notes");
+      setNotes(data.notes);
+    })();
+  }, []);
 
   return (
     <Main title="Bem vindo ao Post it!">
@@ -28,7 +37,20 @@ export function Home() {
         Confira as últimas notas publicadas
       </h2>
       <section>
-        <ul>{<CardNote />}</ul>
+        <ul className="flex flex-wrap justify-center gap-6">
+          {notes.map((note: CardNoteProps) => (
+            <CardNote
+              key={note.id}
+              id={note.id}
+              authorId={note.authorId}
+              authorName={note.authorName}
+              date={note.date}
+              title={note.title}
+              description={note.description}
+              content={note.content}
+            />
+          ))}
+        </ul>
       </section>
     </Main>
   );
