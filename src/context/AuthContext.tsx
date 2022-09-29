@@ -1,10 +1,13 @@
 import { createContext, ReactNode, useEffect, useState } from "react";
 import { Notyf } from "notyf";
-import api from "../api/api";
-import { Navigate } from "react-router-dom";
-import { defaults } from "autoprefixer";
-import { he } from "date-fns/locale";
 
+import { Navigate } from "react-router";
+import axios from "axios";
+import api from "../api/api";
+
+interface CommonHeaderProperties {
+  authorization: string | undefined;
+}
 interface AuthProviderProps {
   children: ReactNode;
 }
@@ -40,6 +43,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
     if (token) {
       api.defaults.headers.authorization = `Bearer ${JSON.parse(token)}`;
 
+      // (
+      //   axios.defaults.headers! as unknown as Record<
+      //     string,
+      //     CommonHeaderProperties
+      //   >
+      // ).common["authorization"] = `Bearer ${JSON.parse(token)}`;
+
       setAuthenticated(true);
 
       const idUser = localStorage.getItem("idUser");
@@ -71,7 +81,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
       localStorage.setItem("token", JSON.stringify(token));
       localStorage.setItem("idUser", data.user.id);
-
       api.defaults.headers.authorization = `Bearer ${token}`;
 
       setIdUser(data.user.id);
@@ -90,6 +99,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   function logout() {
     api.defaults.headers.authorization = undefined;
+
     localStorage.removeItem("token");
     localStorage.removeItem("idUser");
     setIdUser("");
