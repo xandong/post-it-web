@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Navigate, redirect, useParams } from "react-router-dom";
 import { formatRelative, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { Notyf } from "notyf";
@@ -97,6 +97,8 @@ export function Notes() {
       try {
         await api.delete(`/notes/${id}`);
         notify.success("Nota excluída com sucesso");
+
+        history.pushState("", "", "/");
       } catch (error) {
         notify.error("Erro ao excluir");
       }
