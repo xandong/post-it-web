@@ -9,7 +9,7 @@ import { Sign } from "../pages/Sign";
 
 export function Router() {
   const { authenticated } = useContext(AuthContext);
-  console.log(authenticated);
+
   return (
     <Routes>
       <Route path="" element={<Home />} />

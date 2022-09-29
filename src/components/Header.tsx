@@ -12,8 +12,6 @@ export function Header() {
   const [mounted, setMounted] = useState(false);
   const [toggleMenu, setToggleMenu] = useState(false);
 
-  console.log(toggleMenu);
-
   useEffect(() => {
     setMounted(true);
   }, [setTheme, theme]);
