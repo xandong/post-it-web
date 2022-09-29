@@ -2,6 +2,7 @@ import { formatRelative, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { useContext } from "react";
 import { Link } from "react-router-dom";
+import { Link as Lk } from "phosphor-react";
 import { AuthContext } from "../context/AuthContext";
 
 export interface CardNoteProps {
@@ -11,7 +12,8 @@ export interface CardNoteProps {
   date: string;
   title: string;
   description: string;
-  content?: string;
+  content: string;
+  link?: string;
 }
 
 export function CardNote({
@@ -22,9 +24,9 @@ export function CardNote({
   title,
   description,
   content,
+  link,
 }: CardNoteProps) {
   const { idUser } = useContext(AuthContext);
-
   const isAuthor = authorId === idUser;
   const dateFormatted = formatRelative(parseISO(date), new Date(), {
     locale: ptBR,
@@ -68,7 +70,20 @@ export function CardNote({
         <span>{dateFormatted}</span>
       </p>
       <p className="bg-zinc-50/10 p-2 rounded">{description}</p>
-      {content ? <p>{content}</p> : ""}
+      <p className="bg-zinc-50/10 p-2 rounded">{content}</p>
+
+      {link ? (
+        <a
+          href={link}
+          target="_blank"
+          className="flex items-center gap-2 absolute -bottom-2 -right-2 bg-zinc-100/90 p-1 rounded shadow"
+        >
+          <Lk />
+          Saiba mais
+        </a>
+      ) : (
+        ""
+      )}
     </li>
   );
 }

@@ -66,6 +66,7 @@ export function NewNote() {
         <label className="text-sm absolute -top-3 left-2 bg-white dark:bg-black px-1 text-zinc-400">
           Descrição
         </label>
+
         <input
           name="description"
           id="description"
@@ -86,6 +87,7 @@ export function NewNote() {
           name="content"
           id="content"
           value={content}
+          required
           onChange={(e) => setContent(e.target.value)}
           placeholder="Conteúdo da nota..."
           cols={10}
@@ -98,6 +100,7 @@ export function NewNote() {
         <small className="absolute -top-3 left-2 bg-white dark:bg-black px-1 text-zinc-400">
           Link <small>(Opcional)</small>
         </small>
+
         <input
           name="link"
           id="link"
