@@ -11,6 +11,8 @@ export function Header() {
   const [mounted, setMounted] = useState(false);
   const [toggleMenu, setToggleMenu] = useState(false);
 
+  console.log(toggleMenu);
+
   useEffect(() => {
     setMounted(true);
   }, [setTheme, theme]);
@@ -32,13 +34,16 @@ export function Header() {
           {idUser ? (
             <div className="relative">
               <button
+                onMouseEnter={() => setToggleMenu(true)}
                 className="hover:bg-cor-pink dark:hover:bg-cor-purple hover:text-white rounded-full hover:scale-110 transition-all delay-200 duration-200"
-                onClick={() => setToggleMenu(!toggleMenu)}
               >
                 <UserCircle size={32} />
               </button>
               {toggleMenu ? (
-                <menu className="absolute top-14 right-0 text-black dark:text-white">
+                <menu
+                  className="absolute top-10 right-0 text-black dark:text-white"
+                  onMouseLeave={() => setToggleMenu(false)}
+                >
                   <ul className="w-40 flex flex-col gap-2 items-center p-2 bg-zinc-50 dark:bg-zinc-700 border-2 border-zinc-100 dark:border-zinc-800 shadow-md rounded">
                     <li className="a">
                       <Link to="/profile">Perfil</Link>
