@@ -55,6 +55,7 @@ export function Home() {
               title={note.title}
               description={note.description}
               content={note.content}
+              link={note.link}
             />
           ))}
         </ul>
