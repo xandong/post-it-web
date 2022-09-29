@@ -1,11 +1,12 @@
-import { data } from "autoprefixer";
 import { Notyf } from "notyf";
 import { Image, PlusCircle } from "phosphor-react";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import api from "../api/api";
+import { AuthContext } from "../context/AuthContext";
 import { Form } from "./Form";
 
 export function NewNote() {
+  const { idUser, nameUser } = useContext(AuthContext);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [content, setContent] = useState("");
@@ -28,9 +29,9 @@ export function NewNote() {
 
     if (checkInputs()) {
       try {
-        console.log("entro do try");
         await api
           .post("/notes", {
+            authorId: idUser,
             title,
             description,
             content,
@@ -38,7 +39,7 @@ export function NewNote() {
           .then(console.log);
         console.log("apos a await");
       } catch (error) {
-        notify.error("Erro ao enviar. tente novamente em instantes.");
+        notify.error(error.response.data.message);
       }
     }
   }
@@ -47,7 +48,6 @@ export function NewNote() {
     <Form onSubmit={handleSubmit} title="Crie uma nota">
       <input
         id="description"
-        type="text"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
         placeholder="Título da nota"
