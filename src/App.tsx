@@ -1,18 +1,14 @@
 import { Link } from "react-router-dom";
+import { Footer } from "./components/Footer";
 import { Header } from "./components/Header";
 import { Router } from "./router/Router";
 
 export function App() {
   return (
-    <>
+    <div className="min-w-screen min-h-screen flex flex-col">
       <Header />
       <Router />
-      <footer className="p-6 text-center">
-        Desenvolvido por{" "}
-        <Link to="https://github.com/xandong" target={"_blank"} className="a">
-          xandong
-        </Link>
-      </footer>
-    </>
+      <Footer />
+    </div>
   );
 }
