@@ -1,13 +1,9 @@
 import { createContext, ReactNode, useEffect, useState } from "react";
 import { Notyf } from "notyf";
-
 import { Navigate } from "react-router";
-import axios from "axios";
-import api from "../api/api";
+import { apiClient } from "../api/api";
+import { Circle } from "phosphor-react";
 
-interface CommonHeaderProperties {
-  authorization: string | undefined;
-}
 interface AuthProviderProps {
   children: ReactNode;
 }
@@ -41,14 +37,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
     const token = localStorage.getItem("token");
 
     if (token) {
-      api.defaults.headers.authorization = `Bearer ${JSON.parse(token)}`;
-
-      // (
-      //   axios.defaults.headers! as unknown as Record<
-      //     string,
-      //     CommonHeaderProperties
-      //   >
-      // ).common["authorization"] = `Bearer ${JSON.parse(token)}`;
+      apiClient.defaults.headers.common["authorization"] = `Bearer ${JSON.parse(
+        token
+      )}`;
 
       setAuthenticated(true);
 
@@ -56,7 +47,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
       (async () => {
         try {
-          const { data }: any = await api.get(`users/${idUser}`);
+          const { data }: any = await apiClient.get(`users/${idUser}`);
 
           setIdUser(idUser!);
           setNameUser(data.user.name);
@@ -73,7 +64,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   async function signIn(email: string, password: string) {
     try {
-      const { data } = await api.post("/auth", { email, password });
+      const { data } = await apiClient.post("/auth", { email, password });
 
       if (!data.token) return notify.error("Não autenticado.");
 
@@ -81,7 +72,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
       localStorage.setItem("token", JSON.stringify(token));
       localStorage.setItem("idUser", data.user.id);
-      api.defaults.headers.authorization = `Bearer ${token}`;
+
+      apiClient.defaults.headers.common["authorization"] = `Bearer ${token}`;
 
       setIdUser(data.user.id);
       setNameUser(data.user.name);
@@ -98,7 +90,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }
 
   function logout() {
-    api.defaults.headers.authorization = undefined;
+    apiClient.defaults.headers.common["authorization"] = "";
 
     localStorage.removeItem("token");
     localStorage.removeItem("idUser");
@@ -111,7 +103,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }
 
   if (loading) {
-    return <></>;
+    return (
+      <div className="flex items-center justify-center animate-spin">
+        <Circle size={32} />
+      </div>
+    );
   }
 
   return (

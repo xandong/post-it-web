@@ -7,6 +7,7 @@ import { AuthContext } from "../context/AuthContext";
 
 export function Header() {
   const { idUser, logout } = useContext(AuthContext);
+
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [toggleMenu, setToggleMenu] = useState(false);

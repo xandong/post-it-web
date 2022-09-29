@@ -1,20 +1,19 @@
 import { useContext, useEffect, useState } from "react";
-import { Navigate, redirect, useParams } from "react-router-dom";
+import { Link, Navigate, redirect, useParams } from "react-router-dom";
 import { formatRelative, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { Notyf } from "notyf";
-import { Trash } from "phosphor-react";
+import { ArrowLeft, Trash } from "phosphor-react";
 
 import { AuthContext } from "../context/AuthContext";
 
-import api from "../api/api";
+import { apiClient } from "../api/api";
 import { Button } from "../components/Button";
 import { FieldsetNote } from "../components/FieldsetNote";
 import { Form } from "../components/Form";
 import { Main } from "../components/Main";
 
 export function Notes() {
-  const { idUser } = useContext(AuthContext);
   const notify = new Notyf({ duration: 3000 });
 
   const { id } = useParams();
@@ -24,17 +23,17 @@ export function Notes() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [content, setContent] = useState("");
+  const [link, setLink] = useState("");
 
   const [newTitle, setNewTitle] = useState(title);
   const [newDescription, setNewDescription] = useState(description);
   const [newContent, setNewContent] = useState(content);
-
-  console.log(newTitle, newDescription, newContent);
+  const [newLink, setNewLink] = useState(link);
 
   useEffect(() => {
     (async () => {
       try {
-        const { data } = await api.get(`/notes/${id}`);
+        const { data } = await apiClient.get(`/notes/${id}`);
         setAuthorName(data.note.authorName);
 
         setTitle(data.note.title);
@@ -45,6 +44,9 @@ export function Notes() {
 
         data.note.content === null ? "" : setContent(data.note.content);
         setNewContent(content);
+
+        data.note.link === null ? "" : setLink(data.note.link);
+        setNewLink(link);
 
         setDate(
           formatRelative(parseISO(data.note.date), new Date(), {
@@ -60,23 +62,26 @@ export function Notes() {
   async function handleSubmit(e: { preventDefault: () => void }) {
     e.preventDefault();
 
-    const newNote = { id, title, description, content };
+    const newNote = { id, title, description, content, link };
 
     if (title !== newTitle) newNote.title = newTitle;
     if (description !== newDescription) newNote.description = newDescription;
     if (content !== newContent) newNote.content = newContent;
+    if (link !== newLink) newNote.link = newLink;
 
     if (
       title !== newTitle ||
       description !== newDescription ||
-      content !== newContent
+      content !== newContent ||
+      link !== newLink
     ) {
       try {
-        const { data } = await api.put("/notes", newNote);
+        const { data } = await apiClient.put("/notes", newNote);
 
         setTitle(data.note.title);
         setDescription(data.note.description);
         setContent(data.note.content);
+        setLink(data.note.link);
 
         setDate(
           formatRelative(parseISO(data.note.date), new Date(), {
@@ -95,10 +100,8 @@ export function Notes() {
     const confirmExclude = confirm("Tem certeza que deseja excluir?");
     if (confirmExclude) {
       try {
-        await api.delete(`/notes/${id}`);
+        await apiClient.delete(`/notes/${id}`);
         notify.success("Nota excluída com sucesso");
-
-        history.pushState("", "", "/");
       } catch (error) {
         notify.error("Erro ao excluir");
       }
@@ -108,7 +111,12 @@ export function Notes() {
   return (
     <Main>
       <Form title="Editar nota" onSubmit={handleSubmit}>
-        <div className="flex flex-col gap-2 relative group">
+        <span className="text-left">
+          <Link to="/" className="w-fit p-2 flex gap-2 items-center a">
+            <ArrowLeft /> Home
+          </Link>
+        </span>
+        <div className="flex flex-col gap-2 relative">
           <button
             type="button"
             onClick={handleExcludeNote}
@@ -154,6 +162,13 @@ export function Notes() {
               label="Conteúdo"
               value={content}
               setValue={setContent}
+            />
+
+            <FieldsetNote
+              id="link"
+              label="Link"
+              value={link}
+              setValue={setLink}
             />
           </div>
         </div>

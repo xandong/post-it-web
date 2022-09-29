@@ -1,6 +1,6 @@
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { Notyf } from "notyf";
-import api from "../api/api";
+import { apiClient } from "../api/api";
 import { Button } from "../components/Button";
 import { Field } from "../components/Field";
 import { Form } from "../components/Form";
@@ -10,14 +10,13 @@ interface RegisterProps {
   setState: Dispatch<SetStateAction<boolean>>;
 }
 
-export function Register({ state, setState }: RegisterProps) {
+export function Register({ setState }: RegisterProps) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordCheck, setPasswordCheck] = useState("");
 
   const [error, setError] = useState("");
-
   const notify = new Notyf({ duration: 3000 });
 
   function handleSubmit(e: { preventDefault: () => void }) {
@@ -37,22 +36,23 @@ export function Register({ state, setState }: RegisterProps) {
       return notify.error("Senhas inválidas");
     }
 
+    setError("");
+
     (async () => {
       try {
-        const { data } = await api.post("/users", {
+        const { data } = await apiClient.post("/users", {
           name,
           email,
           password,
         });
 
-        notify.success("Cadastrado com sucesso!");
+        notify.success(data.message);
+
         setState(true);
       } catch (error: any) {
         notify.error(`Ops... ${error.response.data.message}`);
       }
     })();
-
-    setError("");
   }
 
   return (
@@ -65,7 +65,7 @@ export function Register({ state, setState }: RegisterProps) {
             id="name"
             label="Nome"
             placeholder="Seu nome e sobrenome"
-            type=""
+            type="text"
           />
           <Field
             value={email}
